@@ -3,27 +3,23 @@ const path = require('path');
 const config = {
     entry: __dirname + '/src/index.js',
     output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'view/bundle.js'
+        path: path.resolve(__dirname, 'views'),
+        filename: 'bundle.js'
     },
     module: {
-        rules: [
+        loaders: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 loader: 'babel-loader',
+                exclude: /node_modules/,
                 query: {
-                    presets: [
-                        'es2015',
-                        'react'
-                    ],
-                    plugins: []
-                },
-                include: [
-                    path.resolve(__dirname, 'app')
-                ]
+                    presets: ['react', 'es2015']
+                }
             }
         ]
-    }
+    },
+    watch: true,
+    devtool: 'source-map'
 };
 
 module.exports = config;
