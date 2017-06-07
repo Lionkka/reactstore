@@ -1,5 +1,5 @@
 const config = {
-    entry: __dirname + '/src/index.js',
+    entry: __dirname + '/components/index.js',
     output: {
         filename: 'bundle.js'
     },

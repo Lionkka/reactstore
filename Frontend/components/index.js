@@ -1,7 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import request from 'request';
 import Header from './Header.jsx';
+import Sidebar from './Sidebar.jsx';
+import reducer from '../reducers';
+import {createStore, applyMiddleware} from 'redux';
+import {Provider} from 'react-redux';
+import {BrowserRouter as Router, Route, HashRouter} from 'react-router-dom';
+import {syncHistoryWithStore} from 'react-router-redux';
+
+import {composeWithDevTools} from 'redux-devtools-extension';
+import thunk from 'redux-thunk';
+
+const url = 'http://localhost:3000';
+const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
+//const history = syncHistoryWithStore(HashRouter, store);
+let un = store.subscribe(() => {
+    //console.log(store.getState());
+});
 
 
 class ContentConteiner extends React.Component {
@@ -158,7 +173,7 @@ class HomePage extends React.Component {
     render() {
         return (
             <div className="container-fluid">
-                <Header />
+                <Header/>
                 <Sidebar/>
                 <ContentConteiner/>
             </div>
@@ -179,12 +194,14 @@ class Breadcrumbs extends React.Component {
     }
 }
 
-
-function renderAll() {
-    ReactDOM.render(
-        <HomePage />,
-        document.getElementById('root')
-    );
-}
-
-export  default renderAll();
+ReactDOM.render(
+    <Provider store={store}>
+        <Router history={HashRouter}>
+            <div>
+                <Route path="/" component={HomePage}/>
+                <Route path="/about" component={HomePage}/>
+            </div>
+        </Router>
+    </Provider>,
+    document.getElementById('root')
+);

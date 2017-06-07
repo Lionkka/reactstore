@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 const categories = require('./routes/categories');
-//const products = require('./routes/products');
+const products = require('./routes/products');
 
 
 const app = express();
@@ -23,8 +23,8 @@ app.use(function (req, res, next) {
     res.set('Access-Control-Allow-Origin', '*');
     next();
 });
-app.use('/category', categories);
-//app.use('/products', products);
+app.use('/categories', categories);
+app.use('/products', products);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

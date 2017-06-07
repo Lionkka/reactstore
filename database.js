@@ -1,9 +1,12 @@
 "use strict";
-const mysql      = require('mysql');
+const mysql = require('mysql');
 
-module.exports = mysql.createConnection({
+let connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
     password : 'qwerty',
     database : 'store'
 });
+
+connection.connect();
+module.exports = connection;
