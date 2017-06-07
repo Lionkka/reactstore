@@ -9,6 +9,7 @@ export default function (state = InitialState, action) {
             state.products = action.payload;
             return state.products;
         default:
+            console.log('default products case!!!');
             return state;
 
     }

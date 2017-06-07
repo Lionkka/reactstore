@@ -9,7 +9,7 @@ export const getMenu = () => dispatch => {
             let res = JSON.parse(body);
             if(res.length){
                 dispatch({type: 'RELOAD_CATEGORIES', payload: res});
-                dispatch({type: 'SET_CURRENT_MENU', payload: 0});
+                dispatch({type: 'SET_CURRENT_CATEGORY', payload: 0});
             }
         });
 };

@@ -8,34 +8,30 @@ import {connect} from 'react-redux';
 import {getMenu} from '../actions/sidebar';
 
 class Sidebar extends React.Component {
-    constructor(props) {
-        super(props);
-
-    }
-
     componentWillMount() {
         if (this.props.categories.allCategories.length === 0) {
             this.props.getAllCategories();
-            this.props.setCurrentMenu(this.props.categories.currentCategory);
         }
     }
-    componentWillReceiveProps(newProps){
-        console.log('componentWillReceiveProps');
+
+    componentWillReceiveProps(newProps) {
+        console.log('componentWillReceiveProps',
+            this.props.categories.parentCategory);
     }
 
     setCurrentCategory(category) {
-
-        console.log('click');
-        this.props.setParentCat(this.props.categories.currentCategory);
-        console.log('setParentCat', this.props.categories.parentCategory);
-        this.props.setCurrentMenu(this.props.categories.currentCategory);
-        this.props.setCurrentCat(category);
-
+        console.log('click', category);
+        if(this.props.categories.currentCategory === category){
+            this.render();
+        }
+        else {
+            this.props.setCurrentCat(category);
+        }
 
     }
 
     render() {
-        const {currentMenu, parentCategory} = this.props.categories;
+        const {currentMenu, parentCategory, currentCategory} = this.props.categories;
         return (
             <aside className="col-md-2">
                 {parentCategory
@@ -44,11 +40,17 @@ class Sidebar extends React.Component {
 
                 <ul className="nav">
                     {currentMenu.map((item) => {
-                        return <li key={item.id}>
-                            <Link to={item.slug} onClick={ () => this.setCurrentCategory(item.id)}>
-                                {item.title}</Link>
 
-                        </li>;
+                        if (item.id === currentCategory) {
+                            return <li key={item.id} className="active"><a disabled>{item.title}</a></li>
+                        }
+                        else{
+                            return <li key={item.id}>
+                                <Link to={item.slug} onClick={ () => this.setCurrentCategory(item.id)}>
+                                    {item.title}</Link>
+
+                            </li>;
+                        }
                     })
                     }
                 </ul>
@@ -64,15 +66,8 @@ export default connect(
     dispatch => ({
         getAllCategories: () =>
             dispatch(getMenu()),
-        setCurrentMenu: (category) => {
-            dispatch({type: 'SET_CURRENT_MENU', payload: category});
-        },
         setCurrentCat: (category) => {
             dispatch({type: 'SET_CURRENT_CATEGORY', payload: category});
-        },
-        setParentCat: (category) => {
-            console.log('disp');
-            dispatch({type: 'SET_PARENT_CATEGORY', payload: category});
         }
     })
 )(Sidebar);
