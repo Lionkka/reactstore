@@ -2,7 +2,8 @@ const InitialState = {
     currentCategory: 0,
     currentMenu: [],
     allCategories: [],
-    parentCategory: null
+    parentCategory: 0,
+    breadcrumbs:[]
 };
 
 export default function (state = InitialState, action) {
@@ -13,57 +14,73 @@ export default function (state = InitialState, action) {
                 currentCategory: state.currentCategory,
                 allCategories: action.payload,
                 currentMenu: [...state.currentMenu],
-                parentCategory: state.parentCategory
+                parentCategory: state.parentCategory,
+                breadcrumbs:[...state.breadcrumbs]
             };
-        case 'SET_CURRENT_CATEGORY':
-            let newMenu = state.allCategories.filter((item) => {
-                return item.parent_id === action.payload;
-            });
-            let newParent = state.parentCategory;
+            break;
 
-            if (newMenu.length === 0) {
-                newMenu = state.currentMenu;
+        case 'SET_CURRENT_CATEGORY':
+
+            let newBreadcrumbs = getBreadcrumbs(action.payload, state.allCategories);
+
+            let currentCategory = {};
+            if(action.payload){
+                currentCategory = state.allCategories.filter(item => item.id === action.payload)[0];
             }
             else {
-                newParent = state.allCategories.filter((item) => {
-                    return item.id === action.payload;
-                })[0]
+                currentCategory.id = action.payload;
             }
 
+            let newMenu = state.allCategories.filter((item) => {
+                return item.parent_id === currentCategory.id;
+            });
+
+            console.log('newBreadcrumbs',newBreadcrumbs);
+            let newParent = 0;
+            if(newBreadcrumbs.length > 1 ){
+                newParent = newBreadcrumbs[1]
+            }
+
+            if (newMenu.length === 0) {
+
+                newMenu = state.allCategories.filter((item) => {
+                    return item.parent_id === currentCategory.parent_id;
+                })
+            }
             return {
-                currentCategory: action.payload,
+                currentCategory: currentCategory.id,
                 allCategories: [...state.allCategories],
                 currentMenu: newMenu,
-                parentCategory: newParent
+                parentCategory: newParent,
+                breadcrumbs: newBreadcrumbs.reverse()
             };
-        // case 'SET_PARENT_CATEGORY':
-        //
-        //     let parent = allCategories.filter((item) => {
-        //         return item.id === action.payload;
-        //     })[0];
-        //     console.log('SET_PARENT_CATEGORY', parent);
-        //     return {
-        //         currentCategory: state.currentCategory,
-        //         allCategories: [...state.allCategories],
-        //         currentMenu: [...state.currentMenu],
-        //         parentCategory: 0
-        //     };
-        // case 'SET_CURRENT_MENU':
-        //     let newMenu = state.allCategories.filter((item) => {
-        //         return item.parent_id === action.payload;
-        //     });
-        //     if (newMenu.length > 0) {
-        //         return {
-        //             currentCategory: state.currentCategory,
-        //             allCategories: [...state.allCategories],
-        //             currentMenu: newMenu,
-        //             parentCategory: state.parentCategory
-        //         };
-        //     }
-        //     else return state;
+            break;
 
         default:
-            console.log('default case!!!');
             return state;
     }
+}
+
+
+function getBreadcrumbs(currentCategory, allCategories) {
+    let breadcrumbs = [];
+
+    let current = currentCategory;
+    do{
+        allCategories.forEach((item)=>{
+            if(item.id === current){
+                breadcrumbs.push(item);
+                current = item.parent_id;
+            }
+        })
+    }
+    while(current);
+
+    //add home page
+    breadcrumbs.push({
+        id:0,
+        slug:'',
+        title:'Home'
+    });
+    return breadcrumbs;
 }

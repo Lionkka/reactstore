@@ -1,15 +1,27 @@
 const InitialState = {
-    productsPerPage : 10,
-    currentPage: 1,
-    products: []
+    products: [],
+    currentProduct: null
 };
 export default function (state = InitialState, action) {
     switch (action.type) {
         case 'RELOAD_PRODUCTS':
-            state.products = action.payload;
-            return state.products;
+            return {
+                products: action.payload,
+                currentProduct: null
+            };
+
+        case 'SET_CURRENT_PRODUCT':
+            let currentProduct = state.products.filter((item) => {
+                return item.id === action.payload;
+            });
+            currentProduct
+                ? currentProduct = currentProduct[0]
+                : currentProduct = action.payload;
+            return {
+                products: state.products,
+                currentProduct
+            };
         default:
-            console.log('default products case!!!');
             return state;
 
     }

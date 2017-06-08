@@ -58,3 +58,7 @@
 .nav li.active {
     background-color: #ddd;
 }
+.img-rounded{
+    width:100%;
+    border: 1px solid #ddd;
+}

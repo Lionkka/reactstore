@@ -1,61 +1,109 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {getProducts} from '../actions/products';
-
-class SidebarLink extends React.Component {
-    render() {
-        return (
-            <li role="presentation"><a href="#">{this.props.title}</a></li>
-        );
-    }
-}
+import Breadcrumbs from './Breadcrumbs';
+import {
+    BrowserRouter as Router,
+    Route,
+    Link
+} from 'react-router-dom';
 
 class ContentConteiner extends React.Component {
-    render() {
-        return (
-            <div className="col-md-9 offset-md-1">
-                <Breadcrumbs/>
-                <div id="products" className="row list-group">
 
-                    <div className="item  col-xs-4 col-lg-4">
-                        <div className="thumbnail">
-                            <img className="group list-group-image" src="http://placehold.it/400x250/000/fff" alt=""/>
-                            <div className="caption">
-                                <h4 className="group inner list-group-item-heading">
-                                    Product title</h4>
-                                <p className="group inner list-group-item-text">
-                                    Product description... Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
-                                    volutpat.</p>
+    constructor(props) {
+        super(props);
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+        console.log('componentWillReceiveProps',
+            nextProps.currentCategory,
+            this.props.currentCategory,
+            this.props.currentProduct
+
+        );
+    }
+
+    render() {
+        if (this.props.currentProduct) {
+            return (
+                <div className="col-md-9 offset-md-1">
+                    <Breadcrumbs/>
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-md-4">
                                 <div className="row">
-                                    <div className="col-xs-12 col-md-6">
-                                        <p className="lead">
-                                            $21.000</p>
-                                    </div>
-                                    <div className="col-xs-12 col-md-6">
-                                        <a className="btn btn-success" href="http://www.jquery2dotnet.com">Add to
-                                            cart</a>
+                                    <div className="col-md-12">
+                                        <img src={this.props.currentProduct.imageUrl} className="img-rounded"/>
                                     </div>
                                 </div>
                             </div>
+                            <div className="col-md-8">
+                                <p>product id:{this.props.currentProduct.id}</p>
+                                <p>product category_id:{this.props.currentProduct.category_id}</p>
+                                <div className="product-title">{this.props.currentProduct.title}</div>
+                                <div className="product-desc">{this.props.currentProduct.description}</div>
+                                <hr />
+                                <div className="product-price">$ {this.props.currentProduct.price}</div>
+                            </div>
                         </div>
                     </div>
-
-
                 </div>
-            </div>
-        );
+            );
+        }
+        else {
+            return (
+                <div className="col-md-9 offset-md-1">
+                    <Breadcrumbs/>
+                    <div id="products" className="row list-group">
+                        {
+                            this.props.products.map((item) => {
+                                return (
+                                    <Link
+                                        to={item.slug}
+                                        key={item.id}
+                                        onClick={() => this.props.setCurrentProduct(item.id, item.category_id)}>
+                                        <div className="item  col-xs-4 col-lg-4">
+                                            <div className="thumbnail">
+                                                <img className="group list-group-image" src={item.imageUrl} alt=""/>
+                                                <div className="caption">
+                                                    <h4 className="group inner list-group-item-heading">
+                                                        {item.title}</h4>
+                                                    <p className="group inner list-group-item-text">
+                                                        {item.description}</p>
+                                                    <div className="row">
+                                                        <div className="col-xs-12 col-md-6">
+                                                            <p className="lead">
+                                                                ${item.price}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                );
+                            })
+                        }
+
+
+                    </div>
+                </div>
+            );
+        }
     }
 }
 
 export default connect(
     state => ({
-        currentCategory: state.currentCategory,
-        products: state.products
+        currentCategory: state.categories.currentCategory,
+        currentProduct: state.products.currentProduct,
+        products: state.products.products
     }),
     dispatch => ({
-        getCurrentProducts:()=>
-            dispatch(getProducts()),
-    })
 
-)(Sidebar);
+        setCurrentProduct: (product, category) =>{
+            dispatch({type: 'SET_CURRENT_PRODUCT', payload: product});
+            dispatch({type: 'SET_CURRENT_CATEGORY', payload: category})
+        }
+
+    })
+)(ContentConteiner);

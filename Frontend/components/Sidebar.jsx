@@ -6,28 +6,24 @@ import {
 } from 'react-router-dom';
 import {connect} from 'react-redux';
 import {getMenu} from '../actions/sidebar';
+import {getProducts} from '../actions/products';
 
 class Sidebar extends React.Component {
-    componentWillMount() {
-        if (this.props.categories.allCategories.length === 0) {
-            this.props.getAllCategories();
-        }
+    constructor(props){
+        super(props);
+        this.props.getAllCategories(this.props.categories.currentCategory);
     }
 
     componentWillReceiveProps(newProps) {
-        console.log('componentWillReceiveProps',
-            this.props.categories.parentCategory);
-    }
 
+    }
     setCurrentCategory(category) {
-        console.log('click', category);
         if(this.props.categories.currentCategory === category){
             this.render();
         }
         else {
             this.props.setCurrentCat(category);
         }
-
     }
 
     render() {
@@ -35,7 +31,7 @@ class Sidebar extends React.Component {
         return (
             <aside className="col-md-2">
                 {parentCategory
-                    ? <Link to={parentCategory.slug}>&#8592; {parentCategory.title}</Link>
+                    ? <Link to={parentCategory.slug} onClick={() =>this.props.setCurrentCat(parentCategory.id)}>&#8592; {parentCategory.title}</Link>
                     : <hr />  }
 
                 <ul className="nav">
@@ -64,9 +60,12 @@ export default connect(
         categories: state.categories,
     }),
     dispatch => ({
-        getAllCategories: () =>
-            dispatch(getMenu()),
+        getAllCategories: (category) => {
+            dispatch(getMenu());
+            dispatch(getProducts(category));
+        },
         setCurrentCat: (category) => {
+            dispatch(getProducts(category));
             dispatch({type: 'SET_CURRENT_CATEGORY', payload: category});
         }
     })
