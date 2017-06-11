@@ -35,7 +35,6 @@ export default function (state = InitialState, action) {
                 return item.parent_id === currentCategory.id;
             });
 
-            console.log('newBreadcrumbs',newBreadcrumbs);
             let newParent = 0;
             if(newBreadcrumbs.length > 1 ){
                 newParent = newBreadcrumbs[1]

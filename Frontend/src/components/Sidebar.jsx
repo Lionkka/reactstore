@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    BrowserRouter as Router,
     Route,
     Link
 } from 'react-router-dom';
@@ -12,6 +11,7 @@ class Sidebar extends React.Component {
     constructor(props){
         super(props);
         this.props.getAllCategories(this.props.categories.currentCategory);
+
     }
 
     componentWillReceiveProps(newProps) {
@@ -30,6 +30,7 @@ class Sidebar extends React.Component {
         const {currentMenu, parentCategory, currentCategory} = this.props.categories;
         return (
             <aside className="col-md-2">
+                <Link to="/about">Netflix</Link>
                 {parentCategory
                     ? <Link to={parentCategory.slug} onClick={() =>this.props.setCurrentCat(parentCategory.id)}>&#8592; {parentCategory.title}</Link>
                     : <hr />  }
@@ -57,9 +58,9 @@ class Sidebar extends React.Component {
 
 export default connect(
     state => ({
-        categories: state.categories,
+        categories: state.categories
     }),
-    dispatch => ({
+    (dispatch) => ({
         getAllCategories: (category) => {
             dispatch(getMenu());
             dispatch(getProducts(category));
