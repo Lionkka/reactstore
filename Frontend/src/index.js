@@ -12,14 +12,14 @@ import {browserHistory} from 'react-router';
 import {Route, Link, Router, BrowserRouter} from 'react-router-dom';
 //import {syncHistoryWithStore} from 'react-router-redux';
 import {composeWithDevTools} from 'redux-devtools-extension';
-//import routes from '../routes';
+
 
 
 import thunk from 'redux-thunk';
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 
-function HomePage(match) {
+function HomePage() {
     return (
         <div className="container-fluid">
             <Header/>
@@ -27,41 +27,17 @@ function HomePage(match) {
             <ContentConteiner/>
         </div>
     );
-};
+}
 
-
-const Child = (match) => (
-    <div>
-        <h3>ID: </h3>
-        <Link to='/about'>about</Link>
-        {console.log(match)}
-    </div>);
-
-
+// нет browserHistory
 //const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(
-    <BrowserRouter >
+    <BrowserRouter>
         <Provider store={store}>
             <div>
-                {/*<Link to="/about">about</Link>*/}
-                <Route exact path="/" component={Sidebar}/>
-                <Route path="/about" component={ContentConteiner}/>
+                <Route path="/" component={HomePage}/>
             </div>
-            {/*<Router history={history}>
-                <div>
-                    <h2>Accounts</h2>
-                    <Link to="/about">about</Link>
-                    <Route exect path="/" component={HomePage}/>
-                    <Route path="/about" component={Child}>
-                        <Route path="about" component={Child}>
-                            <Route path="about" component={Child}/>
-                        </Route>
-                    </Route>
-
-
-                </div>
-            </Router>*/}
         </Provider>
     </BrowserRouter>,
     document.getElementById('root')

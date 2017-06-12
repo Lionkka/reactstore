@@ -11,6 +11,7 @@ class Sidebar extends React.Component {
     constructor(props){
         super(props);
         this.props.getAllCategories(this.props.categories.currentCategory);
+        console.log(props);
 
     }
 
@@ -30,7 +31,6 @@ class Sidebar extends React.Component {
         const {currentMenu, parentCategory, currentCategory} = this.props.categories;
         return (
             <aside className="col-md-2">
-                <Link to="/about">Netflix</Link>
                 {parentCategory
                     ? <Link to={parentCategory.slug} onClick={() =>this.props.setCurrentCat(parentCategory.id)}>&#8592; {parentCategory.title}</Link>
                     : <hr />  }

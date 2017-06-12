@@ -11,6 +11,7 @@ class ContentConteiner extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log(props);
     }
 
     componentWillReceiveProps(nextProps) {
