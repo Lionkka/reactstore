@@ -11,17 +11,11 @@ class ContentConteiner extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(props);
+
     }
 
     componentWillReceiveProps(nextProps) {
 
-        console.log('componentWillReceiveProps',
-            nextProps.currentCategory,
-            this.props.currentCategory,
-            this.props.currentProduct
-
-        );
     }
 
     render() {
